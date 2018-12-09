@@ -2,6 +2,9 @@
 using TechJobs.Data;
 using TechJobs.ViewModels;
 using TechJobs.Models;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace TechJobs.Controllers
 {
@@ -37,42 +40,51 @@ namespace TechJobs.Controllers
         [HttpPost]
         public IActionResult New(NewJobViewModel newJobViewModel)
         {
+
             // TODO #6 - Validate the ViewModel and if valid, create a 
             // new Job and add it to the JobData data store. Then
             // redirect to the Job detail (Index) action/view for the new Job.
+            JobData jobData = JobData.GetInstance();
 
+            Employer employer = new Employer();
+            //employer.ID = newJobViewModel.EmployerID;
+            employer = jobData.Employers.Find(newJobViewModel.EmployerID);
 
-            /*Job newJob = new Job();
-                       
+            Location location = new Location();
+            //location.ID = newJobViewModel.LocationID;
+            location = jobData.Locations.Find(newJobViewModel.LocationID);
+
+            CoreCompetency coreCompetency = new CoreCompetency();
+            //coreCompetency.ID = newJobViewModel.CoreCompetencyID;
+            coreCompetency = jobData.CoreCompetencies.Find(newJobViewModel.CoreCompetencyID);
+
+            PositionType positionType = new PositionType();
+            //positionType.ID = newJobViewModel.PositionTypeID;
+            positionType = jobData.PositionTypes.Find(newJobViewModel.PositionTypeID) ;
+
+            Job newJob = new Job();
             newJob.Name = newJobViewModel.Name;
-            foreach(var employer in newJobViewModel.Employers)
+            newJob.Employer = employer;
+            newJob.Location = location;
+            newJob.CoreCompetency = coreCompetency;
+            newJob.PositionType = positionType;
+
+            if (newJob.Name != null)
             {
-                newJob.Employer.Value = employer.Text;
+               
+                jobData.Jobs.Add(newJob);
+
+                SearchJobsViewModel jobsViewModel = new SearchJobsViewModel();
+
+                jobsViewModel.job = newJob;
+                jobsViewModel.Title = newJob.Employer.Value ;
+
+                return View("Index", jobsViewModel);
             }
 
-            foreach (var location in newJobViewModel.Locations)
-            {
-                newJob.Location.Value = location.Text;
-            }
-
-            foreach (var corecompetency in newJobViewModel.CoreCompetencies)
-            {
-                newJob.CoreCompetency.Value = corecompetency.Text;
-            }
-
-            foreach (var positiontype in newJobViewModel.PositionTypes)
-            {
-                newJob.PositionType.Value = positiontype.Text;
-            }
-            jobData.Jobs.Add(newJob);
-
-            SearchJobsViewModel jobsViewModel = new SearchJobsViewModel();
-
-            jobsViewModel.job = newJob;
-            jobsViewModel.Title = "new job for:";
-
-            return View("Index",jobsViewModel);*/
+            
             return View(newJobViewModel);
+        
         }
     }
 }
