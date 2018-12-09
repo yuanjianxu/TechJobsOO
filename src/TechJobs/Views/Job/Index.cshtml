@@ -3,7 +3,7 @@
 }
 @model TechJobs.ViewModels.SearchJobsViewModel
 
-<h1>@Model.Title Id= @Model.job.ID</h1>
+<h1>@Model.Title Id= @Model.job.ID Name=@Model.job.Name</h1>
 
 @if (Model.job != null)
 {
